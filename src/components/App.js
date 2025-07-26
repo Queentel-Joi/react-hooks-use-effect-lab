@@ -1,41 +1,48 @@
 import React, { useState } from "react";
 import Question from "./Question";
-import quiz from "../data/quiz";
+
+const questions = [
+  {
+    id: 1,
+    prompt: "What is the capital of Kenya?",
+    answers: ["Nairobi", "Kampala", "Dodoma", "Addis Ababa"],
+    correctAnswer: "Nairobi"
+  },
+  {
+    id: 2,
+    prompt: "Which planet is known as the Red Planet?",
+    answers: ["Earth", "Mars", "Jupiter", "Venus"],
+    correctAnswer: "Mars"
+  }
+];
 
 function App() {
-  const [questions, setQuestions] = useState(quiz);
-  const [currentQuestionId, setCurrentQuestion] = useState(1);
+  const [currentIndex, setCurrentIndex] = useState(0);
   const [score, setScore] = useState(0);
-  const currentQuestion = questions.find((q) => q.id === currentQuestionId);
 
-  function handleQuestionAnswered(correct) {
-    if (currentQuestionId < questions.length) {
-      setCurrentQuestion((currentQuestionId) => currentQuestionId + 1);
-    } else {
-      setCurrentQuestion(null);
+  function handleAnswer(isCorrect) {
+    if (isCorrect) {
+      setScore((prev) => prev + 1);
     }
-    if (correct) {
-      setScore((score) => score + 1);
-    }
+
+    // Move to next question
+    setCurrentIndex((prev) => prev + 1);
   }
 
+  const currentQuestion = questions[currentIndex];
+
   return (
-    <main>
-      <section>
-        {currentQuestion ? (
-          <Question
-            question={currentQuestion}
-            onAnswered={handleQuestionAnswered}
-          />
-        ) : (
-          <>
-            <h1>Game Over</h1>
-            <h2>Total Correct: {score}</h2>
-          </>
-        )}
-      </section>
-    </main>
+    <div className="App">
+      <h1>Trivia Game</h1>
+      <p>Score: {score}</p>
+      {currentQuestion ? (
+        <Question question={currentQuestion} onAnswered={handleAnswer} />
+      ) : (
+        <p>Game Over! Your final score is {score}.</p>
+      )}
+    </div>
   );
 }
 
 export default App;
+
